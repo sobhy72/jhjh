@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Report</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    
+  </head>
+  <body>
+    {% include 'nav.html' %}
+    <div class="container">
+      <h1 class="text-center mt-2 mb-4">
+       Report No:
+      </h1>
+       
+          <div style="margin:auto;
+  width: 70%;
+  border: 3px solid green;
+  padding: 10px;
+              text-align:center;">
+        {% for item in range(0,items) %}
+          <form method="post">
+            <label style="border-style:solid;padding:              3px;">Pipe-Rack7</label> 
+            <label >STS_ERECTION</label> 
+            <input name='item' value="{{value[item]}}
+"type="text"  
+               placeholder="Insertss productivity">    <input type="text" 
+         <label >ton</label>       
+          <br>
+              <br>
+        {% endfor %}
+               <input type="hidden" name="hidval" value={{items}}>
+               <label>Add field</label>
+               <input type="checkbox" name="check" >
+                <div class="text-center" >
+        <button type="submit">submit</button>
+      </div>
+               </form>
+      
+            </div>
+        
+    <br>
+     
+      <div class="text-center" style="margin-top:32px">
+       <a class="btn btn-primary btn-lg" href="mailto:hello@jovian.ai?subject=Question%20about%20Job%20Opernings&body=My%20name%3A%20%3Cyour%20name%20here%3E%0D%0A%0D%0AMy%20questions%3A%20%3Center%20question%20here%3E%0D%0A">Contact Us</a>
+      </div>
+    
+    </div>
+    {% include 'footer.html' %}
+  </body>
+  </html>

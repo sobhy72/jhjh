@@ -1,6 +1,10 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify , request
+from database import engine
+from sqlalchemy import text
+
 
 app = Flask(__name__)
+items = 2
 
 JOBS = [
   {
@@ -28,11 +32,51 @@ JOBS = [
   }
 ]
 
+def load_activities_from_db():
+  with engine.connect() as connection:
+    result = connection.execute(text("select * from activities"))       
+    activities = []
+    for row in result.all():
+      activities.append(dict(row._mapping))
+    return activities  
+  
+
+
 @app.route("/")
 def hello_jovian():
     return render_template('home.html', 
                            jobs=JOBS, 
                            company_name='Jovian')
+  
+  
+@app.route("/report/<id>" , methods=('GET','POST'))
+def report_items(id):
+  
+  global items
+  activities = load_activities_from_db()
+  #print('done',values[0]['item'],values)
+  
+  if request.method == 'POST':
+    prn = request.form
+    #print(prn)
+    
+    if request.form.get('check') != None:
+      items = int(request.form['hidval']) + 1  
+      print(items)
+      values = request.form     
+      return render_template('report.html' , items = 
+     items , value = activities)
+     
+    else:
+     values = request.form.getlist('item')
+      
+     print(values)
+     print(values[1])
+     return render_template('report.html' , items = 
+   items , value = values)
+     
+  return render_template('report.html' , items = 
+   2 , value = activities )
 
 @app.route("/api/jobs")
 def list_jobs():
