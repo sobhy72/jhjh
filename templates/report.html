@@ -11,7 +11,7 @@
     {% include 'nav.html' %}
     <div class="container">
       <h1 class="text-center mt-2 mb-4">
-       Report No:
+       Report No ###          {{date}}
       </h1>
        
           <div style="margin:auto;
@@ -21,9 +21,15 @@
               text-align:center;">
         {% for item in range(0,items) %}
           <form method="post">
-            <label style="border-style:solid;padding:              3px;">Pipe-Rack7</label> 
+           <label for="cars">Choose a car:</label>
+  <select name="cars" id="cars">
+    <option value="volvo">Volvo</option>
+    <option value="saab">Saab</option>
+    <option value="opel">Opel</option>
+    <option value="audi">Audi</option>
+  </select> 
             <label >STS_ERECTION</label> 
-            <input name='item' value="{{value[item]}}
+            <input name='item' value=1
 "type="text"  
                placeholder="Insertss productivity">    <input type="text" 
          <label >ton</label>       

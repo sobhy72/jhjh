@@ -3,39 +3,57 @@ from database import engine
 import sqlalchemy
 from sqlalchemy import text , insert , join , select , create_engine, Table, Column, Integer, String, ForeignKey,MetaData
 from sqlalchemy.orm import Session
-from datetime import date
-session = Session(engine)
 
 metadata_obj = MetaData()
-today = date.today()
-d2 = today.strftime("%B %d, %Y")
 
-JOBS=[]
 
 app = Flask(__name__)
 items = 2
 
-# database loader
-def db_ldr():
-  
-    result = session.execute(text("select * from reprots"))       
-    activities = result.fetchall()
-  ## to load data from sql as dict:
-    #for row in result.all():
-     # activities.append(dict(row._mapping))
-      #print(activities)
-      
-    return activities 
-  
-def db_ld():
-   result = session.execute(text("select * from reprots"))  
-   act=[]
-  ## to load data from sql as dict:
-   for row in result.all():
-     act.append(dict(row._mapping))
-      #print(activities) 
-   return act
+JOBS = [
+  {
+    'id': 1,
+    'title': 'Data Analyst',
+    'location': 'Bengaluru, India',
+    'salary': 'Rs. 10,00,000'
+  },
+  {
+    'id': 2,
+    'title': 'Data Scientist',
+    'location': 'Delhi, India',
+    'salary': 'Rs. 15,00,000'
+  },
+  {
+    'id': 3,
+    'title': 'Frontend Engineer',
+    'location': 'Remote'
+  },
+  {
+    'id': 4,
+    'title': 'Backend Engineer',
+    'location': 'San Francisco, USA',
+    'salary': '$150,000'
+  }
+]
 
+def load_activities_from_db():
+  with engine.connect() as connection:
+    result = connection.execute(text("select * from reprots"))       
+    activities = []
+    for row in result.all():
+      activities.append(dict(row._mapping))
+      print(activities)
+      
+    return activities  
+
+def pract_sql_r():
+  with engine.connect() as connection:
+    result = connection.execute(text("select * from reprots"))       
+    activities = []
+    for row in result.all():
+      activities.append(dict(row._mapping))
+      print(activities)
+    return activities
     
 def pr():
   with engine.begin() as conn:
@@ -109,15 +127,13 @@ def lrn_md():
 def hello_jovian():
     return render_template('home.html', 
                            jobs=JOBS, 
-                           company_name='Jovian',mohamed='ahmed')
+                           company_name='Jovian')
   
   
 @app.route("/report/<id>" , methods=('GET','POST'))
-
 def report_items(id):
   
   global items
-  
  # activities = load_activities_from_db()
   #print('done',values[0]['item'],values)
   
@@ -150,7 +166,7 @@ def report_items(id):
    #items , value = values)
      
   return render_template('report.html' , items = 
-   2 , item=1,date=d2)
+   2 , value = JOBS)
 
 @app.route("/api/jobs")
 def list_jobs():
