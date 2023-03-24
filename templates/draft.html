@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Report</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    
+    
+  </head>
+  <body>
+    {% include 'nav.html' %}
+    <div class="container">
+      <h1 class="text-center mt-2 mb-4">
+       Report No ###          {{date}}
+      </h1>
+       
+          <div style="margin:auto;
+  width: 70%;
+  border: 3px solid green;
+  padding: 10px;
+              text-align:center;">
+        {% for item in range(0,rws) %}
+ <form method="post">
+    <select  name="cars" id="cars">
+          <option  value= "Live Area" >Live Area</option>
+          <option  value= "Green Area" >Green Area</option>
+    </select> 
+           
+  <select name="cars" id="cars">
+    {% for item in range(0,itemsc) %}
+    <option value= {{act[item]['descr']}} >{{act[item]['descr']}}</option>
+    {%endfor%}
+   
+  </select> 
+             
+   <input style="text-align: center; height:25px;"size="5"name="item" value="1"
+type="text" placeholder="Qty"> 
+            
+                                       
+         <
+  
+  <select class="custom-select" id="inputGroupSelect01">
+    
+           <option  value= "M3">M3</option> 
+           <option  value= "TON">Ton</option> 
+           <option  value= "DI">DI</option> 
+           <option  value= "ML">ML</option> 
+           <option  value= "Each">Each</option> 
+           <option  value= "M3">M3</option> 
+           <option  value= "TON">Ton</option> 
+           <option  value= "DI">DI</option> 
+           <option  value= "ML">ML</option> 
+           <option  value= "Each">Each</option>
+            <option  value= "M3">M3</option> 
+           <option  value= "TON">Ton</option> 
+           <option  value= "DI">DI</option> 
+           <option  value= "ML">ML</option> 
+           <option  value= "Each">Each</option>
+           <option  value= "M3">M3</option> 
+           <option  value= "TON">Ton</option> 
+           <option  value= "DI">DI</option> 
+           <option  value= "ML">ML</option> 
+           <option  value= "Each">Each</option> 
+           <option  value= "M3">M3</option> 
+           <option  value= "TON">Ton</option> 
+           <option  value= "DI">DI</option> 
+           <option  value= "ML">ML</option> 
+           <option  value= "Each">Each</option>
+            <option  value= "M3">M3</option> 
+           <option  value= "TON">Ton</option> 
+           <option  value= "DI">DI</option> 
+           <option  value= "ML">ML</option> 
+           <option  value= "Each">Each</option>
+           <option  value= "DI">DI</option> 
+           <option  value= "ML">ML</option> 
+           <option  value= "Each">Each</option> 
+           <option  value= "M3">M3</option> 
+           <option  value= "TON">Ton</option> 
+           <option  value= "DI">DI</option> 
+           <option  value= "ML">ML</option> 
+           <option  value= "Each">Each</option>
+            <option  value= "M3">M3</option> 
+           <option  value= "TON">Ton</option> 
+           <option  value= "DI">DI</option> 
+           <option  value= "ML">ML</option> 
+          <option  value= "Each">Each</option>  
+    </select>
+         
+   <p>
+          <br>
+              <br>
+     </p>
+        {% endfor %}
+               <input type="hidden" name="hidval" value=                     {{rws}}>
+               <label>Add field</label>
+               <input type="checkbox" name="check" >
+                <div class="text-center" >
+        <button type="submit">submit</button>
+      </div>
+               </form>
+      
+            </div>
+        
+    <br>
+     
+      <div class="text-center" style="margin-top:32px">
+       <a class="btn btn-primary btn-lg" href="mailto:hello@jovian.ai?subject=Question%20about%20Job%20Opernings&body=My%20name%3A%20%3Cyour%20name%20here%3E%0D%0A%0D%0AMy%20questions%3A%20%3Center%20question%20here%3E%0D%0A">Contact Us</a>
+      </div>
+    
+    </div>
+    {% include 'footer.html' %}
+    
+
+  </body>
+  </html>
+
+
+   
+  <script>
+  $(document).ready(function() {
+   $(".ss").each(function () {
+     $(".ss").select2();
+      $(".ss").select2();
+  }); 
+      
+    
+});
+   </script> 
+        
+   <script>$(document).ready(function() {  
+    $('#xx').select2();
+  });</script> 
+        
+        <script>$(document).ready(function() {  
+  const xx = document.getElementsByClassName("xxx");
+    $(xx).select2();
+   $(".ss").click(function() {
+     $(this).select2();
+   });
+  });</script> 
+  
+     <script src="/static/report.js"></script>

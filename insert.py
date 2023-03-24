@@ -1,6 +1,6 @@
 from sqlalchemy import MetaData
 from sqlalchemy import ForeignKey
-from sqlalchemy import Table, Column, Integer, String , column
+from sqlalchemy import Table, Column, Integer, String , column, delete
 from database import engine
 from sqlalchemy.orm import DeclarativeBase
 from typing import List
@@ -13,41 +13,12 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import insert , select, bindparam
 from sqlalchemy.orm import Session
 
-session=Session(engine)
 
 
 
 metadata_obj = MetaData()
 
 
-class Base(DeclarativeBase):
-    pass
-
-
-
-
-class User(Base):
-    __tablename__ = "user_account"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(30))
-    fullname: Mapped[Optional[str]]
-    addresses: Mapped[List["Address"]] = relationship(back_populates="user")
-    def __repr__(self) -> str:
-        return f"User(id={self.id!r}, name={self.name!r}, fullname={self.fullname!r})"
-
-class Address(Base):
-    __tablename__ = "address"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    email_address: Mapped[str]
-    user_id = mapped_column(ForeignKey("user_account.id"))
-    user: Mapped[User] = relationship(back_populates="addresses")
-    def __repr__(self) -> str:
-        return f"Address(id={self.id!r}, email_address={self.email_address!r})"
-      
-
-      
-class Base(DeclarativeBase):
-    pass
 
 address_table = Table(
      "address",
@@ -67,7 +38,7 @@ user_table = Table(
 user_trial = Table(
     "trial",
     metadata_obj,
-    Column("id", Integer, primary_key=True),
+    Column("id", Integer),
     Column("try_id", String(45)),
     Column("name", String(45)),
 )
@@ -184,10 +155,9 @@ def sm6():
 def sm7():
     stmt = select(User).where(User.name == "spongebob")
     with Session(engine) as session:
-      b=session.execute(stmt).first()
-      
-      return b
-        
+      for row in session.execute(stmt):
+        print(type(row))
+        print(row)
 
 def sm8():
     stmt = select(user_table)
@@ -214,7 +184,7 @@ def sm10():
 
 def sm11():
     row = Session(engine).execute(select(User)).first()
-    return mo
+    print(row)
 
 def sm12():
      
@@ -245,3 +215,20 @@ def sm14():
     with engine.connect() as conn:
         result = conn.execute(insert_stmt)          
         conn.commit()  
+
+def sm15():
+ 
+    insert_stmt = insert(user_trial).values(id ="12",name="good", try_id="good")
+       
+    with engine.connect() as conn:
+        result = conn.execute(insert_stmt)          
+        conn.commit()  
+
+
+def sm16():
+    for x in [19,20,21,22,23,12]:
+      stmt = delete(user_trial).where(user_trial.c.id == x)
+      with engine.connect() as conn:
+        result = conn.execute(stmt)          
+        conn.commit()       
+

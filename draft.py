@@ -4,6 +4,8 @@ import sqlalchemy
 from sqlalchemy import text , insert , join , select , create_engine, Table, Column, Integer, String, ForeignKey,MetaData
 from sqlalchemy.orm import Session
 
+session = Session(engine)
+
 metadata_obj = MetaData()
 
 
@@ -35,7 +37,15 @@ JOBS = [
     'salary': '$150,000'
   }
 ]
-
+def db_ldr():
+  
+   result = session.execute(text("select * from reprots"))       
+   activities = result.fetchall()
+  ## to load data from sql as dict:
+    #for row in result.all():
+     # activities.append(dict(row._mapping))
+      #print(activities) 
+   return activities 
 def load_activities_from_db():
   with engine.connect() as connection:
     result = connection.execute(text("select * from reprots"))       
@@ -174,3 +184,57 @@ def list_jobs():
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', debug=True)
+
+
+class Trial(Base):
+    __tablename__ = "trial"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    try_id: Mapped[str]
+    name = Mapped[str]
+    def __repr__(self) -> str:
+        return f"Address(id={self.id!r}, try_id={self.try_id!r})"
+
+
+def report_items(id):
+  rws=1
+  rst = session.execute(text("SELECT descr FROM reprots"))  
+  act=[]
+  ## to load data from sql as dict:
+  for row in rst.all():
+     act.append(dict(row._mapping))
+    
+  itemsc = len(act)
+  
+ # activities = load_activities_from_db()
+  #print('done',values[0]['item'],values)
+  
+  if request.method == 'POST':
+    #prn = request.form.getlist
+    f=request.form.getlist('item')
+    print('check')
+    #print(prn)
+    #k=prn.getlist('item')
+    #k=prn['item']
+    print('stop')
+    print(f,f[0])
+    
+    #print(k[1])
+    #print(prn['2'])
+    
+    if request.form.get('check') != None:
+      rws = int(request.form['hidval']) + 1  
+      print(rws)
+      values = request.form     
+      return render_template('report.html' , rws = 
+     rws,itemsc=itemsc,act=act , value = values)
+     
+    #else:
+     #values = request.form.getlist('item')
+      
+     #print(values)
+     #print(values[1])
+     #return render_template('report.html' , items = 
+   #items , value = values)
+     
+  return render_template('report.html' , itemsc=itemsc,act=act  
+    )

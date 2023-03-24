@@ -1,48 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html style="background-color:orange;">
   <head>
     <title>Report</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+  crossorigin="anonymous"></script>
+     <link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+   
+    <link rel="stylesheet" href="/static/report.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      
+    
     
   </head>
-  <body>
-    {% include 'nav.html' %}
-    <div class="container">
+      <body style="max-width:800px;margin-inline:auto;">
+       {% include 'nav.html' %}
+      <div class="container">
       <h1 class="text-center mt-2 mb-4">
-       Report No ###          {{date}}
+       Report No ###{{date}}
       </h1>
        
-          <div style="margin:auto;
-  width: 70%;
-  border: 3px solid green;
-  padding: 10px;
-              text-align:center;">
-        {% for item in range(0,items) %}
-          <form method="post">
-           <label for="cars">Choose a car:</label>
-  <select name="cars" id="cars">
-    <option value="volvo">Volvo</option>
-    <option value="saab">Saab</option>
-    <option value="opel">Opel</option>
-    <option value="audi">Audi</option>
-  </select> 
-            <label >STS_ERECTION</label> 
-            <input name='item' value=1
-"type="text"  
-               placeholder="Insertss productivity">    <input type="text" 
-         <label >ton</label>       
-          <br>
-              <br>
-        {% endfor %}
-               <input type="hidden" name="hidval" value={{items}}>
-               <label>Add field</label>
-               <input type="checkbox" name="check" >
-                <div class="text-center" >
-        <button type="submit">submit</button>
+       <div style="margin:auto;
+          width: 90%;
+          border: 3px solid green;
+          padding: 10px;
+          text-align:center;">
+         
+        {% for item in range(0,rws) %}
+         
+       <form  action="/render" method="post">
+          <select class="ss" id="ss" name="area" >
+            <option  value= "Live Area" >Live Area</option>
+            <option  value= "Green Area" >Green Area</option>
+          </select> 
+          <select class="ss" name="maindesc" >
+            {% for item in res %}
+             <option  value= {{item[0]}} >{{item[0]}}</option>
+           
+            {%endfor%}
+   
+          </select> 
+           
+          <select class="ss" name="descr" >
+            {% for item in res %}
+             <option  value= {{item[0]}} >{{item[0]}}</option>
+           
+            {%endfor%}
+   
+          </select> 
+          
+          <input style="text-align:center;height:25px;width:90px" name="QTY" 
+type="number" placeholder="Qty" min=""> 
+         <select class="ss" name="unit" id="cars">
+            <option   value= "select" >select</option>
+            <option   value= "M3" >M3</option>
+            <option   value= "ML" >ML</option>
+            <option   value= "Ton" >Ton</option>
+            <option   value= "DI" >DI</option>
+            <option   value= "M2" >M2</option>
+         </select> 
+   
+         <br>
+         <br>
+       
+          {% endfor %}
+
+         <textarea name="remarks" style="width:97%;"placeholder="اضف الملاحظات / اعطال المعدات / المعوقات"></textarea>
+          <p id="test"></p>
+    
+        
+      <div class="text-center" >
+        <input name="submit" type="submit">
+       
       </div>
-               </form>
+     </form>
       
             </div>
         
@@ -53,6 +87,23 @@
       </div>
     
     </div>
+        <input type="text" placeholder="zaay">
+   
+          <select style="width:500px;"class="ss" name="unit" id="xxx">
+            <option   value= "xxx" >xxx</option>
+            <option   value= "kkkk" >kkkk</option>
+            <option   value= "nn" >nn</option>
+            <option   value= "Ton" >Ton</option>
+            <option   value= "DI" >DI</option>
+            <option   value= "M2" >M2</option>
+         </select> 
+
+      
+        
+        
     {% include 'footer.html' %}
+
+      <script src="/static/report.js"></script>
+
   </body>
   </html>

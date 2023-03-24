@@ -1,160 +1,132 @@
-from flask import Flask, render_template, jsonify , request
-from database import engine
-import sqlalchemy
-from sqlalchemy import text , insert , join , select , create_engine, Table, Column, Integer, String, ForeignKey,MetaData
-from sqlalchemy.orm import Session
-from datetime import date
-session = Session(engine)
+from tables import *
+from credent import *
+from reports import reports
+from users import users
+import time
 
-metadata_obj = MetaData()
+#declarations
+Base = declarative_base()
+Session = sessionmaker(bind = engine)
+sess = Session()
 today = date.today()
 d2 = today.strftime("%B %d, %Y")
+rws=10
+metadata_obj = MetaData()
+meta = MetaData()
 
-JOBS=[]
-
+#app data
 app = Flask(__name__)
-items = 2
+app.config['SECRET_KEY'] = 'lsjlzjfjdsf lsdjflsdjf'
+app.register_blueprint(users,url_prefix='/')
+app.register_blueprint(reports,url_prefix='/')
 
-# database loader
-def db_ldr():
-  
-    result = session.execute(text("select * from reprots"))       
-    activities = result.fetchall()
-  ## to load data from sql as dict:
-    #for row in result.all():
-     # activities.append(dict(row._mapping))
-      #print(activities)
-      
-    return activities 
-  
-def db_ld():
-   result = session.execute(text("select * from reprots"))  
-   act=[]
-  ## to load data from sql as dict:
-   for row in result.all():
-     act.append(dict(row._mapping))
-      #print(activities) 
-   return act
+#Login_User
+@app.route("/",methods=['GET','POST'])
+def login():
+  if request.method=='POST':
+    username=request.form.get("username")
+    password=request.form.get("password")
+    stmt = select(Engineers_Reg.c.password).where(Engineers_Reg.c.user_name == username)
+    res=sess.execute(stmt)
+    res = res.fetchall()
+    if res:
+      print(res[0][0])
+      if password == res[0][0]:
+          print("Approved")
+          b=sess.query(User).filter(User.user_name==username).first()
+          session['loggedin'] = True
+          session['date']=utc.localize(datetime.now())
+          print(session['date'])
+          session['id'] = b.id
+          session['username'] = b.user_name
+          a=login_register(user_name=b.user_name)
+          sess.add(a)
+          sess.commit()
+          return redirect('/report')
+         
+      else:
+        message= "Please Provide Valid Credentials"
+        print("not found",message) 
+        return render_template('login.html' ,message=message)
+  return render_template('login.html')
 
-    
-def pr():
-  with engine.begin() as conn:
-    conn.execute(
-        text("INSERT INTO reprots (descr, unit) VALUES (:x, :y)"),
-        [{"x": 6, "y": 8}, {"x": 9, "y": 10}],
-    )
-    
+#testing fuction
+@app.route("/test",methods=['GET','POST'])
+def tes():  
+  session['loggedin']= True
+  if session['loggedin']:
+    return f"<h1>This is {session['username']}</h1>"
+  return f"<h1>Bad Try</h1>"
+ 
+#Report Form
+@app.route("/report" , methods=('GET','POST'))
+def reportses():
+      #Check session validity to keep user signed 
+      credent()  
+      if not 'loggedin' in session:
+        return redirect('/')
 
-def test_r():
-   m=["A","B","C"]
-   with engine.connect() as conn:
-     
-    conn.execute(
-        text("INSERT INTO reprots (descr, unit) VALUES (:x, :y)"),
-        [{"x": m[0], "y": m[1]}, {"x": m[2], "y": 10}],
-    )
-    conn.commit()
-
-def test_a():
-      stmt = text("SELECT descr, id FROM reprots WHERE descr > :y ORDER BY descr, id")
-      with Session(engine) as session:
-         result = session.execute(stmt, {"y": 6})
-         for row in result:
-          print(f"x: {row.descr}  y: {row.id}")
+      #Get user responsibilites from data base to generate report form
+      username=session['username']
+      res=select(respons.c.respons).where(Engineers_Reg.c.user_name ==username)           
+      res=sess.execute(res)
+      res = res.fetchall()
+      print(res)
+      return render_template('report.html' , res=res  
+           ,date=d2,rws=rws)
    
-def join_st():
+@app.route("/render", methods=['GET','POST'])
+def renderdata():
   
-    meta = MetaData()
+  #get user id
+  user=session['id']
   
-    Engineers_Reg = Table(
-       'Engineers_Reg', meta, 
-       Column('id'), 
-       Column('name'), 
-       Column('disipline'),
-    )
+  #save and return report no. and user_id in db reports_reg table
+  rep=Report_reg(eng_id=user)
+  sess.add(rep)
+  sess.commit()
+  
+  #get report No.
+  repno=sess.query(Report_reg).filter(Report_reg.eng_id==user).order_by(desc(Report_reg.report_no)).first()
+  print(repno.report_no)
+  
+  #Get user Report data 
+  a = request.form.getlist('area')
+  b = request.form.getlist('descr')
+  c = request.form.getlist('unit')
+  d = request.form.getlist('QTY')
+  e = request.form.getlist('maindesc')
+  f = request.form.getlist('remarks')
+   
+  #save user's report data in db
+  i=0
+  j=len(a)-1
+  while i < len(a):
+    if i==j:
+      n=Report(descr=b[i],main_descr=e[i],area=a[i],qty=d[i], unit=c[i], remarks=f[0], report_no=repno.report_no, eng_id=user)
+      sess.add(n)
+      sess.commit()
+      #time.sleep(1)
+    else:
+      n=Report(descr=b[i],main_descr=e[i],area=a[i],qty=d[i],unit=c[i],report_no=repno.report_no,eng_id=user)
+      sess.add(n)
+      sess.commit()
+      #time.sleep(1)
+    i +=1
+  return render_template('report.html',rws = 10)    
+  
+  
+ 
     
-    reprots = Table(
-       'reprots', meta, 
-       Column('id'), 
-       Column('eng_id')
-       
-    )
-    j = Engineers_Reg.join(reprots, Engineers_Reg.c.id == reprots.c.eng_id)
-    stmt = select([Engineers_Reg]).select_from(j)
-    with engine.connect() as conn:  
-      result = conn.execute(stmt)
-      result.fetchall()
-     #The following is the output of the above code −
-    #
-    ##[
-      # (1, 'Ravi', 'Kapoor'),
-       #(1, 'Ravi', 'Kapoor'),
-       #(3, 'Komal', 'Bhandari'),
-       #(5, 'Priya', 'Rajhans'),
-       #(2, 'Rajiv', 'Khanna')
-    #]
-
-
-def lrn_md():
-  import sqlalchemy
-  user_table = Table(
-     "user_account",
-     metadata_obj,
-     Column("id", Integer, primary_key=True),
-     Column("name", String(30)),
-     Column("fullname", String),
- )
-      
-@app.route("/")
-def hello_jovian():
-    return render_template('home.html', 
-                           jobs=JOBS, 
-                           company_name='Jovian',mohamed='ahmed')
-  
-  
-@app.route("/report/<id>" , methods=('GET','POST'))
-
-def report_items(id):
-  
-  global items
-  
- # activities = load_activities_from_db()
-  #print('done',values[0]['item'],values)
-  
-  if request.method == 'POST':
-    #prn = request.form.getlist
-    f=request.form.getlist('item')
-    print('check')
-    #print(prn)
-    #k=prn.getlist('item')
-    #k=prn['item']
-    print('stop')
-    print(f,f[0])
+ 
     
-    #print(k[1])
-    #print(prn['2'])
-    
-    if request.form.get('check') != None:
-      items = int(request.form['hidval']) + 1  
-      print(items)
-      values = request.form     
-      return render_template('report.html' , items = 
-     items , value = values)
-     
-    #else:
-     #values = request.form.getlist('item')
-      
-     #print(values)
-     #print(values[1])
-     #return render_template('report.html' , items = 
-   #items , value = values)
-     
-  return render_template('report.html' , items = 
-   2 , item=1,date=d2)
+ 
+  
+  #data = request.args.to_dict(flat=False)
+  #return jsonify(data)
 
-@app.route("/api/jobs")
-def list_jobs():
-  return jsonify(JOBS)
+
+
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', debug=True)
