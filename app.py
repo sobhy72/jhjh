@@ -1,8 +1,12 @@
 from tables import *
 from credent import *
+import json
 from reports import reports
+from api import api
 from users import users
 import time
+import netifaces as nif
+from uuid import getnode as get_mac
 
 #declarations
 Base = declarative_base()
@@ -19,6 +23,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'lsjlzjfjdsf lsdjflsdjf'
 app.register_blueprint(users,url_prefix='/')
 app.register_blueprint(reports,url_prefix='/')
+app.register_blueprint(api,url_prefix='/')
 
 #Login_User
 @app.route("/",methods=['GET','POST'])
@@ -115,11 +120,42 @@ def renderdata():
     i +=1
   return render_template('report.html',rws = 10)    
   
+def mac_for_ip(ip):
+    'Returns a list of MACs for interfaces that have given IP, returns None if not found'
+    for i in nif.interfaces():
+        addrs = nif.ifaddresses(i)
+        try:
+            if_mac = addrs[nif.AF_LINK][0]['addr']
+            print(if_mac)
+            print(type(if_mac))
+            if_ip = addrs[nif.AF_INET][0]['addr']
+            print(if_ip)
+            print(type(if_ip))
+        except (IndexError, KeyError): #ignore ifaces that dont have MAC or IP
+            if_mac = if_ip = None
+        if if_ip == ip:
+            return if_mac
+    return None  
+def mac_for_ip2(): 
+  if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+    print("mac2:",request.environ['REMOTE_ADDR'])
+  else:
+    print("mac2:",request.environ['HTTP_X_FORWARDED_FOR']) # if behind a proxy  
   
+  mac = get_mac()
+  print("mac:",mac)
+@app.route("/api/get",methods=['GET','POST'])
  
-    
- 
-    
+def get_my_ip():
+    mac_for_ip2()
+    #data =request.form.get("value")
+    data=request.data
+    data = json.loads(data)
+    data["color"] = "red"
+    print("this:",data)
+    print(type(data))
+  
+    return data    
  
   
   #data = request.args.to_dict(flat=False)

@@ -23,15 +23,16 @@ from app import *
 utc=pytz.UTC
 
 def credent():
-  x = utc.localize(datetime.now())
-  print(x)
-  if x > session['date']+timedelta(minutes=90):
-   print("form Here")
-   print(x,(session['date']+timedelta(minutes=1)))
-   session.pop('loggedin', None)
-   session.pop('id', None)
-   session.pop('username', None)
-   session.pop('date', None)
+   if 'loggedin' in session:
+      x = utc.localize(datetime.now())
+      print(x)
+      if x > session['date']+timedelta(minutes=90):
+       print("form Here")
+       print(x,(session['date']+timedelta(minutes=1)))
+       session.pop('loggedin', None)
+       session.pop('id', None)
+       session.pop('username', None)
+       session.pop('date', None)
    
    
 def name():

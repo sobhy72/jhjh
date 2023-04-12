@@ -87,10 +87,38 @@ class Report(Base):
    unit = Column(String)
    remarks = Column(String)
    main_descr = Column(String)
-   report_no = Column(Integer)
+   report_no = Column(String)
    eng_id = Column(Integer)
    area = Column(String)
    qty = Column(String)
     
    def __repr__(self) -> str:
         return f"(id={self.id!r},descr={self. descr!r},unit={self.unit!r}, remarks={self.remarks!r},main_Descr={self.main_descr!r}, report_no={self.report_no!r},eng_id={self.eng_id!r},area={self.area!r},qty={self.qty!r})"
+
+class Equipment_Break_down(Base):
+   __tablename__ = 'Equipment_Break_down'
+   id = Column(Integer, primary_key =  True)
+   Eng_id = Column(Integer)
+   Eng_name = Column(String)
+   Equipment_desc = Column(String)
+   count = Column(Integer)
+   rep_date = Column(DateTime, default=datetime.utcnow)   
+   def __repr__(self) -> str:
+        return f"(id={self.id!r},Eng_id={self. Eng_id!r},Eng_name={self.Eng_name!r}, Equipment_desc={self.Equipment_desc!r},count={self.count!r}, rep_date={self.rep_date!r})"
+
+class Equipment_Register(Base):
+   __tablename__ = 'Equipment_Register'
+   id = Column(Integer, primary_key =  True)
+   Equipment_Descr = Column(Integer)   
+   def __repr__(self) -> str:
+        return f"(id={self.id!r},Equipment_Descr={self. Equipment_Descr!r})"
+
+def login():
+  m="try"
+  students = Table(
+   m, meta, 
+   Column('id', Integer, primary_key = True), 
+   Column('name', String(25)), 
+   Column('lastname', String(25)),
+)
+  meta.create_all(engine)

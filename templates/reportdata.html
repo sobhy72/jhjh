@@ -27,15 +27,20 @@
   <section>
     <table>
       <tr>
-        <th>Date</th>
-        <th>Report.No</th>
+        <th>Area</th>
+        <th>Descr</th>
+        <th>Qty</th>
+        <th>Unit</th>
       </tr>
       {% for item in data %}
       <tr>
-        <td>{{item.report_date.strftime("%d")}}/{{item.report_date.strftime("%m")}}/{{item.report_date.strftime("%Y")}}</td>
-        <td><a href="/reportdisp/{{item.report_no}}">{{item.report_no}}</a></td>
+        <td>{{item.area}}</td>
+        <td>{{item.descr}}</td>
+        <td>{{item.qty}}</td>
+        <td>{{item.unit}}</td>
       </tr>
       {%endfor%}
+      
   
     </table>
        
